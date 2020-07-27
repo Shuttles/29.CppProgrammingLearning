@@ -84,7 +84,8 @@ int main() {
     cout << d.x << endl;
 
     cout << "-----------------------" << endl;
-    c = 987;//如果没有重载opertor=就会调用转换构造函数
+    c = 987;//如果没有重载opertor=就会调用转换构造函数  //经过实践，左边那句注释是错的，应该调用默认operator=
+    //上面一行　987会先调用自身转换构造函数变为一个匿名对象，经过operator=之后就会销毁
     cout << c.x  << endl;
     d = string("wangjialong"); //必须转换为string对象
     cout << d.name << endl;
