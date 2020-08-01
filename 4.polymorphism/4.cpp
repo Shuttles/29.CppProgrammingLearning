@@ -75,7 +75,7 @@ public:
         cout << "Base constructor" << endl;
         this->x = new int; 
     }
-    virtual ~Base() { 
+    virtual ~Base() {//父类中的析构函数一定得是虚函数！！ 
         cout << "Base destructor" << endl;
         delete this->x;
     }
