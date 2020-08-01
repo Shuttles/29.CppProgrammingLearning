@@ -27,6 +27,9 @@ public:
     A(const A &a) {
         cout << "class A copy constructor : " << this << endl;
     }
+    void say() {
+        cout << "class A " << endl;
+    }
     int x;
 };
 
@@ -39,12 +42,19 @@ public:
     B(const B &b) : A(b) {
         cout << "class B copy constructor : " << this << endl;
     }
+    void func() {
+        A::say();//加上A::
+    }
+    void say() {
+        cout << "class B" << endl;
+    }
     int y;
 };
 
 int main() {
     B b1;
     B b2(b1);
+    b2.func();
     const char *msg = (const char *)(&b1);
     for (int i = 0; i < sizeof(B); i++) {
         printf("%X", msg[i]);
