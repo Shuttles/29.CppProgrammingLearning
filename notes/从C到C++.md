@@ -1,3 +1,15 @@
+# 太长不看版
+
+![img](https://wx4.sinaimg.cn/mw690/005LasY6gy1ghfyogvndgj31de0u0gx8.jpg)
+
+
+
+
+
+
+
+
+
 学习语言是其实是按照编程范式来学的
 
 C++的学习重点是
