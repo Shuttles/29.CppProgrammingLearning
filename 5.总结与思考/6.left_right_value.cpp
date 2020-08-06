@@ -43,6 +43,10 @@ void f(int &&x) {
     TEST(move(x), f2);//move()强制形参变为右值
 }
 
+int test_func(const int &&x) {
+    cout << x << endl;
+    return 0;
+}
 
 
 int main() {
@@ -65,5 +69,7 @@ int main() {
     TEST(b + c, f);
     TEST(a++, f);
     TEST(++a, f);
+
+    test_func(a);
     return 0;
 }
