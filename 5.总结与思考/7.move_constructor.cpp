@@ -46,7 +46,7 @@ public:
             this->buff[i] = s.buff[i];
         }*/
     }
-    
+     
     string(string &&s) : __length(s.__length), __buff_size(s.__buff_size), __end(s.__end) {
         cout << "move constructor : " << this << endl;
         this->buff = s.buff;//指向匿名对象的存储空间，以免脱裤子放屁

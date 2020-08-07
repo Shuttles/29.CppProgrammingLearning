@@ -77,15 +77,42 @@ void printAny(const T &a, ARGS...args) {
     return ;
 }
 
+
+//ARG类
+template<typename T, typename ...ARGS>
+class ARG {
+public:
+    typedef T __type;
+    typedef ARG<ARGS...> __rest;
+};
+
+template<typename T>
+class ARG<T> {//虽然知道这个地方是模板类的偏特化，但是还是不太懂86行
+public:
+    typedef T __type;
+};
+
 template<typename T, typename ...ARGS> class Test;
 template<typename T, typename ...ARGS> 
 class Test<T(ARGS...)> {
 public:
-    T operator()(
-        typename ARGS<ARGS...>::__tpye a, 
-        typename ARGS<ARGS...>::__rest::__type b) {
+    T operator()(typename ARG<ARGS...>::__type a, 
+                 typename ARG<ARGS...>::__rest::__type b) {
         return a + b;
     }
+};
+
+
+template<typename T, typename ...ARGS> 
+class Cat {
+public:
+    string __name;
+};
+
+template<typename T> 
+class Cat<T> {//必须得声明成偏特化版本,普通模板类不能重名！！！
+public:
+    int __age;
 };
 
 }
@@ -103,6 +130,8 @@ int main() {
 
     cout << "----------------------" << endl;
     haizei::printAny(123, 34.5, "hello world!", &n);
+
+    cout << "----------------------" << endl;
     haizei::Test<int(int, int)> f3;
     cout << f3(3, 4) << endl;
     return 0;
