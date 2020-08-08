@@ -136,13 +136,16 @@ T add2(T &a, T &b) {
     return c;
 }*/
 
+
+
+//remove_reference begin
 template<typename T> struct remove_reference {
     typedef T type;
 };
 
 
 template<typename T> struct remove_reference<T &> {
-    typedef const T &  type;
+    typedef T  type;
 };
 
 template<typename T> struct remove_reference<T &&> {
@@ -154,58 +157,106 @@ typename remove_reference<T>::type add2(T &&a, T &&b) {
     typename remove_reference<T>::type c = a + b;
     return c;
 }
+//remove_reference end
 
-/*
-template<typename T, typename ...ARGS> 
-class Cat {
-public:
-    string __name;
+
+//add_const begin
+template<typename T> struct add_const {
+    typedef const T type;  
+};
+//add_const end
+
+
+//add_lvalue_reference begin
+template<typename T> struct add_lvalue_reference {
+    typedef T & type;  
+};
+//add_lvalue_reference end
+
+
+//add_rvalue_reference begin
+template<typename T> struct add_rvalue_reference {
+    typedef T && type;  
+};
+//add_rvalue_reference end
+
+
+//remove_pointer begin
+template<typename T> struct remove_pointer {
+    typedef T type;
 };
 
-template<typename T> 
-class Cat<T> {//必须得声明成偏特化版本,普通模板类不能重名！！！
-public:
-    int __age;
-};*/
+template<typename T> struct remove_pointer<T *> {
+    typedef T type;
+};
+//remove_pointer end
 
 
+template<typename T>
+typename remove_pointer<T>::type add3(T *a, T *b) {//remove_pointer
+    typename remove_pointer<T>::type c = *a + *b;
+    return c;
+}
+
+template<typename T>
+typename add_lvalue_reference<T>::type add4(T a, T b) {
+    T c = a + b;//add_lvalue_reference
+    return c;
+}
+
+template<typename T>
+T add5(T a, T b) {//add_const
+    typename add_const<T>::type c = a + b;
+    return c;
+}
 
 }//end of haizei
 
 
+struct foo {
+    void m() const {
+        cout << "Const" << endl;
+    }
+};
+
+template<typename T1, typename T2>
+void print_is_same() {
+    cout << is_same<T1, T2>() << endl;
+}
+
 int main() {
+    int a = 1, b = 2, *p = &a, *q = &b;
+    cout << haizei::add3(p, q) << endl;//remove_pointer
+
+
+
+
+    cout << "----------------------" << endl;
+    //add_const
+    haizei::add_const<foo>::type{}.m();
+
+
+    cout << "----------------------" << endl;
+    //add_l/rvalue_reference
+    using nonref = int;
+    using lref = typename haizei::add_lvalue_reference<nonref>::type;
+    using rref = typename haizei::add_rvalue_reference<nonref>::type;
+    cout << std::is_lvalue_reference<lref>::value << endl;
+    cout << std::is_rvalue_reference<rref>::value << endl;
+
+
+    cout << "----------------------" << endl;
+    //remove_pointer
+    print_is_same<int, haizei::remove_pointer<int *>::type>();
+
+
+    /*
+    cout << "----------------------" << endl;
     int inta = 123, intb = 456;
     cout << haizei::add2(inta, intb) << endl;
 
     cout << "----------------------" << endl;
     cout << haizei::add2(123, 456) << endl;
-
-    cout << "----------------------" << endl;
-    haizei::func2(haizei::test_param_func);
-
-    cout << "----------------------" << endl;
-    haizei::FoolPrintAny<string> f;
-    f("hello world!");
-    haizei::FoolPrintAny<int> f2;
-    f2(123);
-    int n = 45, m = 67;
-    int *p = &n, *q = &m;
-    cout << haizei::add(n, m) << endl;
-    cout << haizei::add(p, q) << endl;
-
-    cout << "----------------------" << endl;
-    haizei::printAny(123, 34.5, "hello world!", &n);
-
-    /*
-    cout << "----------------------" << endl;
-    haizei::Test<int(int, int)> f3;
-    cout << f3(3, 4) << endl;
     */
-
-
-    cout << "----------------------" << endl;
-    haizei::Test<int(int, int, int, int)> f4;
-    cout << f4(1, 2, 3, 4) << endl;
-
     return 0;
 }
