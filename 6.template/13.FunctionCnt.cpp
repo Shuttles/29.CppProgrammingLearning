@@ -18,6 +18,7 @@
 #include <functional>
 using namespace std;
 
+/*
 namespace haizei {
 
 template<typename RT, typename ...PARAMS> 
@@ -75,11 +76,14 @@ private:
 };
 
 } // end of haizei
+*/
 
+/*
 void f(function<int(int, int)> g) {
     cout << g(3, 4) << endl;
     return ;
 }
+*/
 
 int add(int a, int b) {
     return a + b;
@@ -93,21 +97,31 @@ struct MaxClass {
 };
 
 //改成模板类
-
-class FunctionCnt {
+template<typename RT, typename ...PARAMS> class FunctionCnt;
+template<typename RT, typename ...PARAMS> 
+class FunctionCnt<RT(PARAMS...)> {
 public:
-    FunctionCnt(function<int(int, int)> g) : g(g), __cnt(0) {  }
-    int operator()(int a, int b) {
+    FunctionCnt(function<RT(PARAMS...)> g) : g(g), __cnt(0) {}
+    //原本想法是通过ARG类取出所有参数类型作为形参列表
+    //template<typename ...ARGS>//这说明可以直接用变参列表！不必前面非得有个参数！
+    RT operator()(PARAMS... args) {
         __cnt += 1;
-        return g(a, b);
+        return g(args...);
     }
     int cnt() { return __cnt; }
 private:
-    function<int(int, int)> g;
+    function<RT(PARAMS...)> g;
     int __cnt;
 };
 
+
+double multply(double a, double b, double c) {
+    return a * b * c;
+}
+
+
 int main() {
+    /*
     MaxClass max;
     f(add);
     f(max);
@@ -115,11 +129,18 @@ int main() {
     haizei::function<int(int, int)> g2(max);
     cout << g1(3, 4) << endl;
     cout << g2(3, 4) << endl;
-
+    */
+    /*
     FunctionCnt add_cnt(add);
     add_cnt(3, 4);
     add_cnt(4, 5);
     add_cnt(7, 9);
     cout << add_cnt.cnt() << endl;
+    */
+    
+    FunctionCnt<double(double, double, double)> multply_cnt(multply);
+    cout << multply_cnt(4.4, 3.3, 2.2) << endl;
+    cout << multply_cnt(111.0, 11.0, 10.0) << endl;
+    cout << multply_cnt.cnt() << endl;
     return 0;
 }
