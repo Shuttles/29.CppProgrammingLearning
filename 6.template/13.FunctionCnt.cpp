@@ -18,13 +18,13 @@
 #include <functional>
 using namespace std;
 
-/*
 namespace haizei {
 
 template<typename RT, typename ...PARAMS> 
 class base {
 public :
     virtual RT operator()(PARAMS...) = 0;
+    virtual base<RT, PARAMS...> *getCopy() = 0;
     virtual ~base() {}
 };
 
@@ -36,6 +36,9 @@ public :
     virtual RT operator()(PARAMS...args) override {
         return this->ptr(args...);
     }
+    virtual base<RT, PARAMS...> *getCopy() override  {
+        return new normal_func<RT, PARAMS...>(ptr);
+    } 
 
 private:
     func_type ptr;
@@ -48,6 +51,9 @@ public :
     virtual RT operator()(PARAMS...args) override {
         return this->ptr(args...);
     }
+    virtual base<RT, PARAMS...> *getCopy() override {
+        return new functor<C, RT, PARAMS...>(ptr);
+    }
 
 private:
     C &ptr;
@@ -57,18 +63,30 @@ template<typename RT, typename ...PARAMS> class function;
 template<typename RT, typename ...PARAMS>
 class function<RT(PARAMS...)> {
 public :
+    //转换构造
     function(RT (*func)(PARAMS...)) 
     : ptr(new normal_func<RT, PARAMS...>(func)) {}
 
     template<typename T>
-    function(T &&a) 
+    function(T a) 
     : ptr(new functor<typename remove_reference<T>::type, RT, PARAMS...>(a)){}
+
+    //拷贝构造
+    function(const function &f) {
+        this->ptr = f.ptr->getCopy();
+    }
+
+    //移动构造
+    function(function &&f) {
+        this->ptr = f.ptr;
+        f.ptr = nullptr;
+    }
 
     RT operator()(PARAMS... args) {
         return this->ptr->operator()(args...);
     }
     ~function() {
-        delete ptr;
+        if (ptr != nullptr) delete ptr;
     }
 
 private:
@@ -76,26 +94,10 @@ private:
 };
 
 } // end of haizei
-*/
-
-/*
-void f(function<int(int, int)> g) {
-    cout << g(3, 4) << endl;
-    return ;
-}
-*/
-
-int add(int a, int b) {
-    return a + b;
-}
 
 
-struct MaxClass {
-    int operator()(int a, int b) {
-        return a > b ? a : b;
-    }
-};
 
+/*我的版本
 //改成模板类
 template<typename RT, typename ...PARAMS> class FunctionCnt;
 template<typename RT, typename ...PARAMS> 
@@ -112,35 +114,40 @@ public:
 private:
     function<RT(PARAMS...)> g;
     int __cnt;
+};*/
+
+
+//光哥版本
+template<typename RT, typename ...PARAMS> class FunctionCnt;
+template<typename RT, typename ...PARAMS> 
+class FunctionCnt<RT(PARAMS...)> {
+public:
+    FunctionCnt(haizei::function<RT(PARAMS...)> g) : g(g), __cnt(0) {
+        cout << "constructor" << endl;
+    }
+    RT operator()(PARAMS... args) {
+        cout << "in operator()" << endl;
+        __cnt += 1;
+        return g(args...);
+    }
+    int cnt() { return __cnt; }
+
+private:
+    haizei::function<RT(PARAMS...)> g;
+    int __cnt;
 };
 
-
+//试验函数
 double multply(double a, double b, double c) {
     return a * b * c;
 }
 
 
 int main() {
-    /*
-    MaxClass max;
-    f(add);
-    f(max);
-    haizei::function<int(int, int)> g1(add);
-    haizei::function<int(int, int)> g2(max);
-    cout << g1(3, 4) << endl;
-    cout << g2(3, 4) << endl;
-    */
-    /*
-    FunctionCnt add_cnt(add);
-    add_cnt(3, 4);
-    add_cnt(4, 5);
-    add_cnt(7, 9);
-    cout << add_cnt.cnt() << endl;
-    */
-    
+    int n;
     FunctionCnt<double(double, double, double)> multply_cnt(multply);
-    cout << multply_cnt(4.4, 3.3, 2.2) << endl;
-    cout << multply_cnt(111.0, 11.0, 10.0) << endl;
+    cout << multply_cnt(5.5, 4.4, 8.2) << endl;
+    cout << multply_cnt(111.0, 11.2, 13.3) << endl;
     cout << multply_cnt.cnt() << endl;
     return 0;
 }
