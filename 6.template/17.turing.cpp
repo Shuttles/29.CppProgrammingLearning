@@ -93,7 +93,7 @@ struct IsTest<n, 0> {
 
 template<int i>
 struct IsTest<2, i> {
-    static constexpr int r = 1;//一定是素数
+    static constexpr int r = 1;//n == 2一定是素数
 };
 
 template<int n>
@@ -130,6 +130,49 @@ struct SumPrime<1> {
     static constexpr int r = 0;
 };
 
+
+
+/*
+void PrintPrime(int n) {
+    for (int i = 2; i <= n; i++) {
+        constexpr int x = i;
+        if (!IsPrime<x>::r) continue;
+        cout << x * IsPrime<x>::r << endl;
+    }
+    return ;
+}*/
+
+template<int i, int n>
+struct getNextCnt {
+    static constexpr int r = (i > n ? 0 : 1);
+};
+
+template<int n>
+struct print_prime {
+    template<int i, int cnt>//这个第二个参数其实是个判断条件！！！
+    struct __output {
+        static void run() {
+            if (IsPrime<i>::r) {
+                cout << i << endl;
+            }
+            print_prime<n>::__output<i + 1, getNextCnt<i + 1, n>::r>::run();
+        }
+    };
+
+    template<int i>//偏特化版本作为递归出口
+    struct __output<i, 0> {
+        static void run() {
+            return ;
+        }
+    };
+    
+    static void output() {//静态函数作为对外接口
+        print_prime<n>::__output<2, 1>::run();//这个1是随便传的，只要不是0就行！
+        return ;
+    }
+
+};
+
 int main() {
     cout << IsEven<123>::r << endl;    
     cout << IsEven<124>::r << endl;    
@@ -146,5 +189,8 @@ int main() {
 
     cout << SumPrime<10>::r << endl;
     cout << SumPrime<20>::r << endl;
+
+    print_prime<100>::output();
+
     return 0;
 }
