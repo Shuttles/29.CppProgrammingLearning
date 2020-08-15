@@ -145,7 +145,7 @@ int main() {
     ThreadPool tp(2);
     tp.start();
     for (int i = 0; i < 10; i++) {
-        tp.add_one_task(func, i, ref(n));
+        tp.add_one_task(func, i, ref(n));//加任务
     }
     std::this_thread::sleep_for(std::chrono::seconds(2));
     cout << "add task done" << endl;
