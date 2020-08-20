@@ -15,7 +15,7 @@ void output() {
 void Assert(const char* exp, string regular)
 {
     ExpressionPointer visitor;
-    GetExp(exp)->Accept(&visitor);
+    GetExp(exp)->Accept(&visitor);//GetExp返回语法树的根节点
     assert(visitor.result == regular);
     output();
 }
