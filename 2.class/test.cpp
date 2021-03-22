@@ -18,36 +18,35 @@
 #include <vector>
 using namespace std;
 
-class Clock {
+class People {
+    friend int main();
+    int x, y;
+    string name;
 public:
-    Clock() {
-        second = 0, minute = 0, hour = 0;
-    }
-    Clock(int newS, int newM, int newH);//重载
-    void setTime(int newS = 0, int newM = 0, int newH = 0) {
-        second = newS;
-        minute = newM;
-        hour = newH;
-    }
-    void showTime();
-
-private:
-    int second, minute, hour;
+    People(string name);
+    void set(int x);
+    void say();
 };
 
-void Clock::showTime() {
-    cout << hour << ":" << minute << ":" << second << endl;
+People::People(string _name) {
+    this->name = _name;
+}
+
+void People::set(int x) {
+    cout << "set function : " << this << endl;
+    this->x = x;//this指针指向当前对象
     return ;
 }
 
-Clock::Clock(int newS, int newM, int newH) {
-    second = newS, minute = newM, hour = newH;
+void People::say() {
+    cout << "My name is " << name << endl;
+    return ;
 }
 
-
 int main() {
-    Clock clock_1, clock_2(59, 10, 21);
-    clock_1.showTime();
-    clock_2.showTime();
+    People a("hug");
+    People b = string("czy");
+    a.say();
+    b.say();
     return 0;
 }
