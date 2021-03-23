@@ -19,34 +19,32 @@
 using namespace std;
 
 class People {
-    friend int main();
-    int x, y;
-    string name;
 public:
-    People(string name);
-    void set(int x);
-    void say();
+    People(string name) {
+        cout << "string param constructor : " << this << endl;
+        this->name = name;
+    }
+
+    People(const People &a) {
+        cout << "copy constructor : " << this << endl;
+        this->name = a.name;
+    }
+    ~People() {
+        cout << "destructor : " << this << endl;
+    }
+
+private:
+    string name;
 };
 
-People::People(string _name) {
-    this->name = _name;
+
+People func() {
+    People temp_a("czy");
+    return temp_a;
 }
 
-void People::set(int x) {
-    cout << "set function : " << this << endl;
-    this->x = x;//this指针指向当前对象
-    return ;
-}
-
-void People::say() {
-    cout << "My name is " << name << endl;
-    return ;
-}
 
 int main() {
-    People a("hug");
-    People b = string("czy");
-    a.say();
-    b.say();
+    People a = func();
     return 0;
 }

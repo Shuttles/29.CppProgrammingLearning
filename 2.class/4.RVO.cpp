@@ -19,12 +19,15 @@ using namespace std;
 class People {
 public:
     People(string name) {
-        cout << "string param constrcutor" << endl;
+        cout << "string param constrcutor : " << this << endl;
         this->name = name;
     }
     People(const People &a) {
-        cout << "copy constrcutor" << endl;
+        cout << "copy constrcutor : " << this << endl;
         this->name = a.name;
+    }
+    ~People() {
+        cout << "destructor : " << this << endl;
     }
 
 private:
