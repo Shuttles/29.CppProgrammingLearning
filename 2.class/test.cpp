@@ -18,33 +18,84 @@
 #include <vector>
 using namespace std;
 
-class People {
+class A {
 public:
-    People(string name) {
-        cout << "string param constructor : " << this << endl;
-        this->name = name;
+    A() {
+        arr = new int[10];
+    }
+    A(const A &a) : A() {
+        for (int i = 0; i < 10; i++) {
+            this->arr[i] = a.arr[i];
+        }
+        this->x = a.x, this->y = a.y;
     }
 
-    People(const People &a) {
-        cout << "copy constructor : " << this << endl;
-        this->name = a.name;
-    }
-    ~People() {
-        cout << "destructor : " << this << endl;
-    }
-
-private:
-    string name;
+    int x, y;
+    int *arr;
 };
 
 
-People func() {
-    People temp_a("czy");
-    return temp_a;
+class B {
+public:
+    B() : obj(nullptr) {
+        arr = new int[10];
+        arr[3] = 9973;
+    }
+    B(A *obj) : B() {
+        this->obj = obj;
+    }
+    int operator()(int a, int b) {
+        return a + b;
+    }
+    int &operator[](int ind) {
+        return arr[ind];
+    }
+    void operator[](const char *msg) {
+        cout << msg << endl;
+        return ;
+    }
+
+    A *operator->() {
+        return obj;
+    }
+    A &operator*() {
+        return *obj;
+    }
+
+    ~B() { delete arr; }
+private:
+    int *arr;
+    A *obj;
+};
+
+ostream &operator<<(ostream &out, const A &a) {
+    cout << "A(" << a.x << ", " << a.y << ")";
+    return out;
 }
 
-
 int main() {
-    People a = func();
+    B add;
+    cout << add(3, 4) << endl;
+    cout << add[3] << endl;
+
+    cout << "----------------------------------------" << endl;
+    add[3] = 8876;
+    cout << add[3] << endl;
+    add["hello world!"];
+
+
+    cout << "----------------------------------------" << endl;
+    A a, b(a);
+    a.x = 67, a.y = 99;
+    B p = &a;
+
+    cout << p->x << " " << p->y << endl;
+    cout << *p << endl;
+
+    a.arr[3] = 9973;
+    b.arr[3] = 6687;
+    cout << a.arr[3] << endl;
+    cout << b.arr[3] << endl;
+
     return 0;
 }
