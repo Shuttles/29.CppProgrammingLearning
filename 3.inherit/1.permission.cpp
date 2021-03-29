@@ -54,6 +54,7 @@ public:
 int main() {
     Cat a("kitty", 29);
     a.say();
+    a.Animal::say();
 
     Bat b("hug", 16384);
     b.say();//会报错，因为say变成了protected
