@@ -63,6 +63,48 @@ string s = str.substr(2, 5);
 
 
 
+# priority_queue
+
+1. `priority_queue<T, Container, Compare>`
+2. Compare是比较方法，类似于sort第三个参数那样的比较方式，对于自定义类型，需要我们手动进行比较运算符的重载。与sort直接Bool一个函数来进行比较的简单方法不同，Compare需要使用**结构体**的运算符重载完成，直接bool cmp(int a,int b){ return a>b; } 这么写是无法通过编译的。
+3. greater和less在priority_queue中是相反的！！！greater反而是小顶堆！！默认是less大顶堆！！
+4. 注意priority_queue**不能遍历**！！！想要遍历只能先top再pop！！
+5. 经典题：[23. 合并 K 个升序链表](https://leetcode.cn/problems/merge-k-sorted-lists/)
+
+```c++
+#include <queue>
+#include <functional>
+
+struct cmp {
+	// 从大到小排序
+  // 相当于greater
+	bool operator()(int a, int b) {
+    return a > b;
+  }
+};
+
+// 小顶堆
+priority_queue<int, vector<int>, cmp> q;
+
+priority_queue<int>  //默认降序队列，大顶堆
+priority_queue<int,vector<int>,less<int>> //降序队列，大顶堆
+priority_queue<int,vector<int>,greater<int>>  //升序队列，小顶堆
+
+// 常用操作
+q.empty();
+q.size();
+q.top();
+q.pop();
+```
+
+
+
+
+
+
+
+
+
 # set和map
 
 1. set维护的是有序集合，map维护的是有序映射
